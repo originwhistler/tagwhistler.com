@@ -1,0 +1,141 @@
+<?php
+// $Id: vimeo_link_formatter.module,v 1.1 2011/02/03 11:04:39 bevan Exp $
+
+/**
+ * @file
+ * Provides a field formatter for Link fields to format them as Vimeo video players.
+ */
+
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function vimeo_link_formatter_field_formatter_info() {
+  $formatters = array();
+
+  $formatters['vimeo_link_formatter_player'] = array(
+    'label' => t('Vimeo Player'),
+    'description' => t('Embeds a Vimeo player, if the URL is for a Vimeo.com video page.'),
+    'field types' => array('link_field'),
+    'settings' => vimeo_link_formatter_default_settings_player(),
+  );
+
+  // @todo Implement the rest of this.
+  // $formatters['vimeo_link_formatter_thumbnail'] = array(
+  //   'label' => t('Vimeo Thumbnail'),
+  //   'description' => t('Displays the thumbnail of Vimeo video, if the URL is for a Vimeo.com video page.'),
+  //   'field types' => array('link_field'),
+  // );
+
+  return $formatters;
+}
+
+/**
+ * Implementation of hook_field_formatter_settings_summary().
+ */
+function vimeo_link_formatter_field_formatter_settings_summary(&$field, &$instance, &$view_mode) {
+  module_load_include('admin.inc', 'vimeo_link_formatter');
+  // Call the function which handles this formatter.
+  $function = __FUNCTION__ . '_' . $instance['display'][$view_mode]['type'];
+  return call_user_func($function, $field, $instance, $view_mode);
+}
+
+/**
+ * Implementation of hook_field_formatter_settings_form().
+ */
+function vimeo_link_formatter_field_formatter_settings_form(&$field, &$instance, &$view_mode, &$form, &$form_state) {
+  module_load_include('admin.inc', 'vimeo_link_formatter');
+  // Call the function which handles this formatter.
+  $function = __FUNCTION__ . '_' . $instance['display'][$view_mode]['type'];
+  return call_user_func($function, $field, $instance, $view_mode, $form, $form_state);
+}
+
+/**
+ * Implementation of hook_field_formatter_view().
+ */
+function vimeo_link_formatter_field_formatter_view(&$entity_type, &$entity, &$field, &$instance, &$langcode, &$items, &$display) {
+  // Call the function which handles this formatter.
+  $function = __FUNCTION__ . '_' . $display['type'];
+  return call_user_func($function, $entity_type, $entity, $field, $instance, $langcode, $items, $display);
+}
+
+/**
+ * Implementation of vimeo_link_formatter_field_formatter_view_FORMATTER();
+ *
+ * Renders $items as <iframe>s for the vimeo_link_formatter_player formatter.
+ *
+ * @return Array
+ *    A render()-compatible array of #markup strings, E.g.
+ *      <iframe src="http://player.vimeo.com/video/14309120?title=0&amp;
+ *      byline=0&amp;portrait=0&amp;color=c9ff23&amp;autoplay=1&amp;loop=1" 
+ *      width="400" height="225" frameborder="0"></iframe>
+ */
+function vimeo_link_formatter_field_formatter_view_vimeo_link_formatter_player($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  // Attributes for the <iframe>.
+  // Makes IE's <iframe> borders play nicely.
+  $attributes = array('frameborder' => 0);
+  $settings = array('width', 'height');
+  foreach ($settings as $name) {
+    $attributes[$name] = $display['settings'][$name];
+  }
+  $attributes = drupal_attributes($attributes);
+
+  // Default Vimeo Player formatter settings.
+  $defaults = vimeo_link_formatter_default_settings_player();
+
+  // Options for Drupal's url() function.
+  $url = array('query' => array(), 'external' => TRUE);
+
+  // Build up the query string.
+  foreach ($display['settings'] as $name => $value) {
+    // Vimeo does not pay attention to the value of the paramter, but
+    // whether the parameter is set or not.  So it iss important not to set
+    // parameters to their default values.  I.e.
+    //   Do not set title=1, because that is Vimeo.com's default, and setting
+    //   title=1 will cause the same effect as setting title=0, which is not
+    //   desirable.
+    // Also, skip over the settings used for attributes.
+    if (!in_array($name, $settings) && $defaults[$name] !== $value) {
+      $url['query'][$name] = $value;
+    }
+  }
+
+  $ret = array();
+  foreach ($items as $delta => $item) {
+    // Extract the ID from the URL.
+    preg_match('@http://(www\.)?vimeo\.com/([0-9]+)@', $item['url'], $matches);
+    if ($id = $matches[2]) {
+      $url = url("http://player.vimeo.com/video/$id", $url);
+      $ret[] = array('#markup' => "<iframe src=\"$url\" $attributes></iframe>");
+    }
+    else {
+      // The link is not a valid Vimeo.com link.
+      // @todo Handle this better, perhaps with node-form validation or more
+      // formatter settings?
+    }
+  }
+  return $ret;
+}
+
+/**
+ * Vimeo.com's default player settings.
+ *
+ * @see vimeo_link_formatter_field_formatter_settings_form_vimeo_link_formatter_player()
+ *
+ * @return Array
+ *    Default values keyed by the setting name.
+ */
+function vimeo_link_formatter_default_settings_player() {
+  $defaults = array(
+    // Cast values to the type that Form API forms return them as.
+    'title' => (Integer) TRUE,
+    'byline' => (Integer) TRUE,
+    'portrait' => (Integer) TRUE,
+    'color' => '00adef',
+    'autoplay' => (Integer) FALSE,
+    'loop' => (Integer) FALSE,
+    'width' => (String) 400,
+    'height' => (String) 225,
+  );
+  return $defaults;
+}

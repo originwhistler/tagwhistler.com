@@ -1,0 +1,129 @@
+/**
+ * @file
+ * Navigation Styling
+ */
+
+
+/*
+ * The active item in a Drupal menu
+ */
+li a.active {
+  color: #000;
+}
+
+/*
+ * Navigation bar
+ */
+#navigation {
+  /* overflow: hidden; /* Sometimes you want to prevent overlapping with main div. */
+}
+
+#navigation ul, /* Main menu and secondary menu links */
+#navigation .content ul, /* Menu block links */
+{
+  margin: 0;
+  padding: 0;
+  text-align: left; /* LTR */
+}
+
+.block-menu-block ul{
+  margin:0;
+  padding:0;
+}
+
+.block-menu-block ul li, /* A simple method to get navigation links to appear in one line. */
+.block-menu-block .content li
+{
+  float: left; /* LTR */
+  padding: 10px 10px 10px 0; /* LTR */
+}
+
+.block-menu-block::after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.region-navigation {
+}
+
+/*
+ * Main menu (Winter and Summer)
+ */
+.sidebar .block-menu-block h2.block-title{
+	margin: 0;	
+}
+ 
+.sidebar .block-menu-block .content{
+	padding: 0;	
+}
+ 
+.sidebar .block-menu-block ul
+{ 
+	margin: 0;
+	padding: 0;
+}
+
+.sidebar .block-menu-block ul li,
+.sidebar .block-menu-block .content li
+{
+	float: none;
+	list-style: none;
+	margin: 0;
+	padding:0;
+	text-transform:uppercase;
+}
+
+.sidebar .block-menu-block ul li a{
+	text-decoration: none;
+	display:block;
+	margin: 0;
+	padding: 10px 20px;
+	border-bottom: 1px solid #CCC;
+}
+
+.sidebar .block-menu-block ul li a:hover{
+	text-decoration: none;
+	background: #D8D8D8;
+}
+
+#secondary-menu {
+  float: right;
+}
+
+/*
+ * Menu blocks
+ */
+.block-menu {
+}
+
+.menu-block-1 ul li, .menu-block-2 ul li, .menu-block-3 ul li{
+  list-style: none;
+}
+
+/*
+ * "Menu block" blocks
+ *
+ * Drupal core has limited ways in which it can display its menus. To get around
+ * these limitations, see http://drupal.org/project/menu_block
+ */
+.block-menu-block {
+}
+
+
+/*
+ * Footer Menu
+ */
+#block-menu-menu-footer-menu ul {
+	text-align: center;
+	margin: 0;
+	padding: 10px 0;
+}
+
+#block-menu-menu-footer-menu ul li{
+  display: inline;
+  padding: 0 10px; /* LTR */
+  list-style: none;
+}

@@ -1,0 +1,77 @@
+/**
+ * @file
+ * Views Styling
+ */
+
+/*
+ * Views list
+ */
+.region-content .view-tour-list .views-row, .region-content .view-news-list .views-row, .region-content .view-press-release-list .views-row{
+	border-top: 1px solid #CCC;	
+	margin: 5px 0;
+	padding: 5px 0;
+}
+ 
+.region-content .views-row .list-left-part {
+	width: 120px;
+	float: left;
+}
+
+.region-content .views-row .list-right-part {
+	height:1%;
+	overflow:auto;
+}
+
+.region-content .views-row .list-right-part p{
+	margin: 0;
+	padding: 0;
+}
+
+.region-content .button-more{
+	display: block;
+	padding: 5px 0;	
+}
+
+
+
+
+/*
+ * Views slideshow
+ */
+.view-inner-page-slideshow, .view-home-slideshow{
+	position: relative;
+}
+
+.views_slideshow_main{
+
+}
+
+.views-slideshow-controls-bottom{
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 10;
+}
+
+.views-slideshow-pager-field-item .views-field-nothing .views-content-nothing{
+	margin: 10px;
+	width: 15px;
+	height: 15px;
+	text-indent:-9999px;
+	background-color:#FFF;	
+	cursor: pointer;
+}
+
+
+/*
+ * News List on homepage (highlight)
+ */
+.highlight .view-news-list{
+		
+}
+
+.highlight .view-news-list .views-row{
+	margin: 0 0 10px 0;
+	padding: 0 0 10px 0;
+	border-bottom: 1px solid #CCC;		
+}
